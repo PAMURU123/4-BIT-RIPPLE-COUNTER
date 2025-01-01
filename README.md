@@ -23,18 +23,60 @@ In timing diagram Q0 is changing as soon as the negative edge of clock pulse is 
 ![image](https://github.com/naavaneetha/4-BIT-RIPPLE-COUNTER/assets/154305477/85e1958a-2fc1-49bb-9a9f-d58ccbf3663c)
 
 **Procedure**
-
-/* write all the steps invloved */
-
+1. Increment count on each positive edge of the clock
+2. Reset count to zero when it reaches 15
+3. Generate clock signal(clk)
+4. Instantinate functional testing by displaying the count at each clock cycle for 16 cycles
+5. Conduct functional testing by displaying the count at each clock cycle for 16 cycles.
 **PROGRAM**
+```
+module ripple (
+    input clk,     // Clock input
+    input reset,   // Reset input (active high)
+    output [3:0] q // 4-bit output
+);
+    // Internal signals for flip-flops
+    reg [3:0] q_int;
 
-/* Program for 4 Bit Ripple Counter and verify its truth table in quartus using Verilog programming.
+    // Assign internal register to output
+    assign q = q_int;
 
- Developed by: RegisterNumber:
-*/
+    always @(posedge clk or posedge reset) begin
+        if (reset) 
+            q_int[0] <= 1'b0; // Reset the first bit to 0
+        else 
+            q_int[0] <= ~q_int[0]; // Toggle the first bit on clock edge
+    end
+
+    // Generate the other flip-flops based on the output of the previous one
+    genvar i;
+    generate
+        for (i = 1; i < 4; i = i + 1) begin : ripple
+            always @(posedge q_int[i-1] or posedge reset) begin
+                if (reset) 
+                    q_int[i] <= 1'b0; // Reset the bit to 0
+                else 
+                    q_int[i] <= ~q_int[i]; // Toggle the bit on clock edge of previous stage
+            end
+        end
+    endgenerate
+endmodule
+```
+```
+ Developed by:PAMURU VENKATESH
+
+ RegisterNumber: 24010537
+```
 
 **RTL LOGIC FOR 4 Bit Ripple Counter**
 
+![image](https://github.com/user-attachments/assets/0a1eb1e3-65a9-4ea7-988f-12e3fd83253a)
+
+
 **TIMING DIGRAMS FOR 4 Bit Ripple Counter**
 
+![image](https://github.com/user-attachments/assets/0827bd20-166c-4763-a507-860aa4a0c0ef)
+
+
 **RESULTS**
+Thus, the Bit Ripple Counter is designed and its functionality is validated using the truth table and timing diagrams.
